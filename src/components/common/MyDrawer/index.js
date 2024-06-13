@@ -3,7 +3,6 @@ import { styled, useTheme } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import Drawer from '@mui/material/Drawer';
 import CssBaseline from '@mui/material/CssBaseline';
-
 import List from '@mui/material/List';
 import Divider from '@mui/material/Divider';
 import IconButton from '@mui/material/IconButton';
@@ -13,9 +12,10 @@ import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
-import { FaTruckArrowRight } from 'react-icons/fa6';
-import { FaTrashCanArrowUp } from 'react-icons/fa6';
-
+import { IoHome } from 'react-icons/io5';
+import { BiSolidCabinet } from 'react-icons/bi';
+import { MdOutlineMessage } from 'react-icons/md';
+import { Link } from 'react-router-dom';
 const DrawerHeader = styled('div')(({ theme }) => ({
     display: 'flex',
     alignItems: 'center',
@@ -31,6 +31,24 @@ export default function MyDrawer({ open, setOpen, drawerWidth }) {
     const handleDrawerClose = () => {
         setOpen(false);
     };
+
+    const listDrawerItem = [
+        {
+            path: '/',
+            text: 'Trang Chủ',
+            icon: IoHome,
+        },
+        {
+            path: '/chat',
+            text: 'Tin Nhắn Nhóm',
+            icon: MdOutlineMessage,
+        },
+        {
+            path: '/cabinet',
+            text: 'Tủ Đồ Online',
+            icon: BiSolidCabinet,
+        },
+    ];
 
     return (
         <Box sx={{ display: 'flex', flexGrow: 1 }}>
@@ -56,30 +74,20 @@ export default function MyDrawer({ open, setOpen, drawerWidth }) {
                 </DrawerHeader>
                 <Divider />
                 <List>
-                    {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
-                        <ListItem key={text} disablePadding>
+                    {listDrawerItem.map((item) => (
+                        <ListItem key={item.text} disablePadding onClick={handleDrawerClose}>
                             <ListItemButton>
                                 <ListItemIcon>
-                                    {index % 2 === 0 ? <FaTruckArrowRight /> : <FaTrashCanArrowUp />}
+                                    <item.icon />
                                 </ListItemIcon>
-                                <ListItemText primary={text} />
+                                <Link to={item.path}>
+                                    <ListItemText primary={item.text} />
+                                </Link>
                             </ListItemButton>
                         </ListItem>
                     ))}
                 </List>
                 <Divider />
-                <List>
-                    {['All mail', 'Trash', 'Spam'].map((text, index) => (
-                        <ListItem key={text} disablePadding>
-                            <ListItemButton>
-                                <ListItemIcon>
-                                    {index % 2 === 0 ? <FaTruckArrowRight /> : <FaTrashCanArrowUp />}
-                                </ListItemIcon>
-                                <ListItemText primary={text} />
-                            </ListItemButton>
-                        </ListItem>
-                    ))}
-                </List>
             </Drawer>
         </Box>
     );
