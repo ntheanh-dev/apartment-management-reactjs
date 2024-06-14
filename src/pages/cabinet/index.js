@@ -1,11 +1,17 @@
 import {
+    Alert,
     Backdrop,
     Box,
     Breadcrumbs,
+    Button,
     Checkbox,
     CircularProgress,
+    Dialog,
+    DialogActions,
+    DialogTitle,
     IconButton,
     Link,
+    Snackbar,
     Tooltip,
     Typography,
 } from '@mui/material';
@@ -13,16 +19,15 @@ import React, { useEffect, useState } from 'react';
 import { MdKeyboardArrowLeft } from 'react-icons/md';
 import { BsArrowDown } from 'react-icons/bs';
 import { visuallyHidden } from '@mui/utils';
-import { FaTrashAlt } from 'react-icons/fa';
 import { MdFilterList } from 'react-icons/md';
 import { FormControl, FormLabel, Option, Select, Sheet, Table } from '@mui/joy';
 import { MdOutlineKeyboardArrowLeft, MdOutlineKeyboardArrowRight } from 'react-icons/md';
 import { Link as LinkTo } from 'react-router-dom';
-import APIs, { authApi, endPoints } from '../../configs/APIs';
+import { authApi, endPoints } from '../../configs/APIs';
 import cookie from 'react-cookies';
 import { Badge } from 'react-bootstrap';
 import queryString from 'query-string';
-
+import { MdOutlineCallReceived } from 'react-icons/md';
 function labelDisplayedRows({ from, to, count }) {
     return `${from}–${to} of ${count !== -1 ? count : `more than ${to}`}`;
 }
@@ -127,7 +132,7 @@ function EnhancedTableHead(props) {
     );
 }
 function EnhancedTableToolbar(props) {
-    const { numSelected } = props;
+    const { numSelected, setOpen } = props;
 
     return (
         <Box
@@ -155,9 +160,9 @@ function EnhancedTableToolbar(props) {
             )}
 
             {numSelected > 0 ? (
-                <Tooltip title="Delete">
-                    <IconButton size="sm" color="danger" variant="solid">
-                        <FaTrashAlt />
+                <Tooltip title="Nhận">
+                    <IconButton size="sm" color="danger" variant="solid" onClick={() => setOpen(true)}>
+                        <MdOutlineCallReceived />
                     </IconButton>
                 </Tooltip>
             ) : (
@@ -182,6 +187,42 @@ const Cabinet = () => {
 
     const [loading, setLoading] = useState(false);
 
+    const [refresh, setRefresh] = useState(false);
+
+    //--------------Dialog--------------
+    const [open, setOpen] = React.useState(false);
+    //---------------Alert---------------
+    const [alertMessage, setAlertMessage] = useState('Đã Có Lỗi Xảy Ra');
+    const [openAleart, setOpenAlert] = useState(false);
+    const handleClose = () => {
+        setOpen(false);
+    };
+
+    const handleReceiveItem = () => {
+        setOpen(false);
+        const fetchApi = async () => {
+            setLoading(true);
+            const formData = new FormData();
+            formData.append('items', selected);
+            try {
+                await authApi().post(endPoints['postItems'], JSON.stringify({ items: selected }), {
+                    headers: {
+                        'Content-Type': 'application/json;charset=UTF-8',
+                    },
+                });
+                setPage(1);
+                setRefresh(!refresh);
+                setSelected([]);
+            } catch (ex) {
+                setOpenAlert(true);
+                console.log(ex);
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchApi();
+    };
+
     useEffect(() => {
         setLoading(true);
         const param = queryString.stringify(
@@ -194,22 +235,19 @@ const Cabinet = () => {
             { skipEmptyString: true },
         );
         const loadItems = async () => {
-            cookie.save(
-                'token',
-                'eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJBbmhUaGVOZ3V5ZW4iLCJleHAiOjE3MTgzODE3NjYsInVzZXJJZCI6MTM1LCJpYXQiOjE3MTgzNzA5NjYsImp0aSI6IjVkMDkxZmJkLTJhMjQtNDFkMi05MWI3LTA0NmYxYzYyNDU2ZCIsInVzZXJuYW1lIjoiYWRtaW4xIn0.3nKc2bSeV6xSgv3hOn6IbswHnh7vMuxm_FAUIEhlGpA',
-            );
             try {
                 let res = await authApi().get(endPoints['items'](`?${param}`));
                 setData(res.data.result?.results);
                 setTotal(res.data.result.count);
             } catch (ex) {
-                console.error(ex);
+                console.log(ex);
+                setOpenAlert(true);
             } finally {
                 setLoading(false);
             }
         };
         loadItems();
-    }, [page, size, orderBy, order]);
+    }, [page, size, orderBy, order, refresh]);
 
     const handleRequestSort = (event, property) => {
         console.log(property);
@@ -223,7 +261,7 @@ const Cabinet = () => {
 
     const handleSelectAllClick = (event) => {
         if (event.target.checked) {
-            const newSelected = data.map((n) => n.id);
+            const newSelected = data.filter((i) => i.receivedDate == null).map((n) => n.id);
             setSelected(newSelected);
             return;
         }
@@ -232,6 +270,10 @@ const Cabinet = () => {
 
     const handleClick = (event, id) => {
         const selectedIndex = selected.indexOf(id);
+        const selectedItems = data.find((e) => e.id === id);
+        if (selectedItems.receivedDate !== null) {
+            return;
+        }
         let newSelected = [];
 
         if (selectedIndex === -1) {
@@ -265,6 +307,8 @@ const Cabinet = () => {
 
     const isSelected = (id) => selected.indexOf(id) !== -1;
 
+    const ableSelectItemCount = data.filter((i) => i.receivedDate == null).length;
+
     // Avoid a layout jump when reaching the last page with empty rows.
     const emptyRows = data.length < size ? size - data.length : 0;
 
@@ -293,7 +337,7 @@ const Cabinet = () => {
             </Breadcrumbs>
 
             <Sheet variant="outlined" sx={{ width: '100%', boxShadow: 'sm', borderRadius: 'sm' }}>
-                <EnhancedTableToolbar numSelected={selected.length} />
+                <EnhancedTableToolbar numSelected={selected.length} setOpen={setOpen} />
                 <Table
                     aria-labelledby="tableTitle"
                     hoverRow
@@ -311,7 +355,7 @@ const Cabinet = () => {
                 >
                     <EnhancedTableHead
                         numSelected={selected.length}
-                        size={size}
+                        size={ableSelectItemCount}
                         order={order}
                         orderBy={orderBy}
                         onSelectAllClick={handleSelectAllClick}
@@ -323,8 +367,8 @@ const Cabinet = () => {
                             const isItemSelected = isSelected(row.id);
 
                             const labelId = `enhanced-table-checkbox-${row.id}`;
-                            const deliveryDate = row.deliveryDate.reverse().join('-');
-                            const receivedDate = row?.receivedDate?.reverse().join('-');
+                            const deliveryDate = row.deliveryDate.join('-');
+                            const receivedDate = row?.receivedDate?.join('-');
                             return (
                                 <tr
                                     onClick={(event) => handleClick(event, row.id)}
@@ -344,6 +388,7 @@ const Cabinet = () => {
                                 >
                                     <th scope="row">
                                         <Checkbox
+                                            disabled={row.receivedDate !== null}
                                             checked={isItemSelected}
                                             slotProps={{
                                                 input: {
@@ -439,6 +484,37 @@ const Cabinet = () => {
                     </tfoot>
                 </Table>
             </Sheet>
+
+            <Dialog
+                open={open}
+                onClose={handleClose}
+                aria-labelledby="alert-dialog-title"
+                aria-describedby="alert-dialog-description"
+            >
+                <DialogTitle id="alert-dialog-title">{'Bạn có muốn nhận những món hàng này ?'}</DialogTitle>
+                {/* <DialogContent>
+                    <DialogContentText id="alert-dialog-description">
+                        Bạn có muốn nhận những món hàng này?
+                    </DialogContentText>
+                </DialogContent> */}
+                <DialogActions>
+                    <Button onClick={handleClose}>Từ Chối</Button>
+                    <Button onClick={handleReceiveItem} autoFocus>
+                        Đồng Ý
+                    </Button>
+                </DialogActions>
+            </Dialog>
+
+            <Snackbar
+                open={openAleart}
+                onClose={() => setOpenAlert(false)}
+                autoHideDuration={6000}
+                anchorOrigin={{ horizontal: 'right', vertical: 'top' }}
+            >
+                <Alert severity="error" va sx={{ width: '100%' }}>
+                    {alertMessage}
+                </Alert>
+            </Snackbar>
         </div>
     );
 };
