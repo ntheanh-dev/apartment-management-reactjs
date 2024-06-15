@@ -15,41 +15,56 @@ import APIs, { authApi, endPoints } from '../../configs/APIs';
 import cookie from 'react-cookies';
 import { useNavigate } from 'react-router-dom';
 import { Alert, Backdrop, CircularProgress, Snackbar } from '@mui/material';
+import { useDispatch, useSelector } from 'react-redux';
+import { login } from '../../redux/userReducer';
+import { unwrapResult } from '@reduxjs/toolkit';
 
 const Login = () => {
     const [loading, setLoading] = useState(false);
     const [openAlert, setOpenAlert] = useState(false);
     const nav = useNavigate();
-
+    const dispath = useDispatch();
+    const { status } = useSelector((state) => state.user);
     const handleSubmit = async (event) => {
         event.preventDefault();
         setLoading(true);
         const data = new FormData(event.currentTarget);
 
-        try {
-            let res = await APIs.post(
-                endPoints['login'],
-                JSON.stringify({
-                    username: data.get('username'),
-                    password: data.get('password'),
-                }),
-                {
-                    headers: {
-                        'Content-Type': 'application/json;charset=UTF-8',
-                    },
-                },
-            );
-            cookie.save('token', res.data?.result?.token);
-            setTimeout(async () => {
-                let u = await authApi().get(endPoints['myInfo']);
+        dispath(
+            login({
+                username: data.get('username'),
+                password: data.get('password'),
+            }),
+        )
+            .then(unwrapResult)
+            .then(() => {
                 nav('/');
-            }, 100);
-        } catch (ex) {
-            setOpenAlert(true);
-            console.error(ex);
-        } finally {
-            setLoading(false);
-        }
+            });
+
+        // try {
+        //     let res = await APIs.post(
+        //         endPoints['login'],
+        //         JSON.stringify({
+        //             username: data.get('username'),
+        //             password: data.get('password'),
+        //         }),
+        //         {
+        //             headers: {
+        //                 'Content-Type': 'application/json;charset=UTF-8',
+        //             },
+        //         },
+        //     );
+        //     cookie.save('token', res.data?.result?.token);
+        //     setTimeout(async () => {
+        //         let u = await authApi().get(endPoints['myInfo']);
+        //         nav('/');
+        //     }, 100);
+        // } catch (ex) {
+        //     setOpenAlert(true);
+        //     console.error(ex);
+        // } finally {
+        //     setLoading(false);
+        // }
     };
 
     return (
@@ -79,6 +94,7 @@ const Login = () => {
                         name="username"
                         autoComplete="username"
                         autoFocus
+                        defaultValue={'admin1'}
                     />
                     <TextField
                         margin="normal"
@@ -89,6 +105,7 @@ const Login = () => {
                         type="password"
                         id="password"
                         autoComplete="current-password"
+                        defaultValue={'12345'}
                     />
                     <FormControlLabel control={<Checkbox value="remember" color="primary" />} label="Nhớ mật khẩu" />
                     <Button type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2 }}>
@@ -104,13 +121,12 @@ const Login = () => {
                 </Box>
             </Box>
             {/*--------------Loading------------  */}
-            <Backdrop sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }} open={loading}>
+            <Backdrop sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }} open={status === 'pending'}>
                 <CircularProgress color="inherit" />
             </Backdrop>
             {/* ---------------Alert------------- */}
             <Snackbar
-                open={openAlert}
-                onClose={() => setOpenAlert(false)}
+                open={status === 'rejected'}
                 autoHideDuration={6000}
                 anchorOrigin={{ horizontal: 'right', vertical: 'top' }}
             >
