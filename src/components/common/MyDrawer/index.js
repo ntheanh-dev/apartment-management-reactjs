@@ -16,6 +16,7 @@ import { IoHome } from 'react-icons/io5';
 import { BiSolidCabinet } from 'react-icons/bi';
 import { MdOutlineMessage } from 'react-icons/md';
 import { Link } from 'react-router-dom';
+import { MdFamilyRestroom } from 'react-icons/md';
 const DrawerHeader = styled('div')(({ theme }) => ({
     display: 'flex',
     alignItems: 'center',
@@ -47,6 +48,11 @@ export default function MyDrawer({ open, setOpen, drawerWidth }) {
             path: '/cabinet',
             text: 'Tủ Đồ Online',
             icon: BiSolidCabinet,
+        },
+        {
+            path: '/relatives',
+            text: 'Người Thân',
+            icon: MdFamilyRestroom,
         },
     ];
 
