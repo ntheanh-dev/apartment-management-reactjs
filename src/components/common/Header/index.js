@@ -116,7 +116,7 @@ const Header = ({ open, setOpen, drawerWidth }) => {
                 </MenuItem>
                 <MenuItem onClick={handleMenuClose}>
                     <Link
-                        to="/profile"
+                        to="/login"
                         className="flex items-center gap-1.5 text-sm font-medium duration-300 ease-in-out hover:text-primary lg:text-base"
                     >
                         <CiLogout />
