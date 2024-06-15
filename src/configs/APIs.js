@@ -9,6 +9,7 @@ export const endPoints = {
     addRelative: 'relatives/add/',
     login: 'token',
     myInfo: 'residents/my-info/',
+    changePassWord: 'change-password/',
 };
 
 export const authApi = () => {
