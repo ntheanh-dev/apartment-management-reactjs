@@ -15,10 +15,13 @@ import {
     TextField,
     Backdrop,
     CircularProgress,
+    IconButton,
 } from '@mui/material';
-import React, { useState } from 'react';
-import { useSelector } from 'react-redux';
+import React, { useRef, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { authApi, endPoints } from '../../configs/APIs';
+import { changeAvatar } from '../../redux/userReducer';
+import { unwrapResult } from '@reduxjs/toolkit';
 
 const Profile = () => {
     //--------------Dialog--------------
@@ -31,6 +34,10 @@ const Profile = () => {
     const [oldPassword, setOldPassword] = useState('');
     const [newPassword, setNewPassword] = useState('');
     const { data } = useSelector((state) => state.user);
+
+    const dispatch = useDispatch();
+
+    const file = useRef();
 
     const handleChangePassword = () => {
         setLoading(true);
@@ -49,7 +56,6 @@ const Profile = () => {
                         },
                     },
                 );
-                console.log(res);
                 setAlertMessage('Đổi Mật Khẩu Thành Công');
                 setAlertType('success');
                 setOpenAlert(true);
@@ -72,14 +78,47 @@ const Profile = () => {
         fetchApi();
     };
 
+    const handleChangeFile = (e) => {
+        const form = new FormData();
+        form.append('file', e.target.files[0]);
+        setLoading(true);
+        dispatch(changeAvatar(form))
+            .then(unwrapResult)
+            .then((e) => {
+                setAlertMessage('Đổi Avatar Thành Công');
+                setAlertType('success');
+                setOpenAlert(true);
+                setLoading(false);
+            })
+            .catch((e) => {
+                setAlertMessage('Đã Có Lỗi Xảy Ra');
+                setAlertType('error');
+                setOpenAlert(true);
+                setLoading(false);
+            });
+    };
+
     return (
         <div className="p-6 flex flex-col gap-4">
             <div className="flex justify-between items-center">
                 <div className="flex items-center gap-3">
-                    <Avatar alt="A" src={data.avatar} sx={{ width: 80, height: 80 }} />
+                    <div>
+                        <input
+                            onChange={(e) => handleChangeFile(e)}
+                            onClick={(e) => (e.target.value = null)}
+                            ref={file}
+                            hidden
+                            type="file"
+                            accept=".png,.jpg"
+                            id="avatar"
+                        />
+                        <label htmlFor="avatar" className="cursor-pointer">
+                            <Avatar alt="A" src={data.avatar} sx={{ width: 80, height: 80 }} />
+                        </label>
+                    </div>
                     <div className="flex flex-col">
                         <Typography level="h3">Nguyễn Thế Anh</Typography>
-                        {data.email && <Typography level="body-sm">data.email</Typography>}
+                        {data.email && <Typography level="body-sm">{data.email}</Typography>}
                     </div>
                 </div>
                 <div>

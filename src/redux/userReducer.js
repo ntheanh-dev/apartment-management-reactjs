@@ -22,6 +22,19 @@ export const userReducer = createSlice({
             })
             .addCase(login.rejected, (state) => {
                 state.status = 'rejected';
+            })
+
+            .addCase(changeAvatar.pending, (state) => {
+                state.status = 'pending';
+            })
+            .addCase(changeAvatar.fulfilled, (state, action) => {
+                state.status = 'idle';
+                if (action.payload) {
+                    state.data.avatar = action.payload;
+                }
+            })
+            .addCase(changeAvatar.rejected, (state) => {
+                state.status = 'rejected';
             });
     },
 });
@@ -36,6 +49,19 @@ export const login = createAsyncThunk('user/fetchUserData', async (user, { rejec
         cookie.save('token', res.data?.result?.token);
         let u = await authApi().get(endPoints['myInfo']);
         return u.data.result;
+    } catch (err) {
+        return rejectWithValue(err.response.data);
+    }
+});
+
+export const changeAvatar = createAsyncThunk('user/changeAvatar', async (form, { rejectWithValue }) => {
+    try {
+        let res = await authApi().post(endPoints['changeAvatar'], form, {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+            },
+        });
+        return res.data.result;
     } catch (err) {
         return rejectWithValue(err.response.data);
     }

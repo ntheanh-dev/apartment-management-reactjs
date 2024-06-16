@@ -9,6 +9,7 @@ export const endPoints = {
     addRelative: 'relatives/add/',
     login: 'token',
     myInfo: 'residents/my-info/',
+    changeAvatar: '/residents/change-avatar/',
     changePassWord: 'change-password/',
 };
 

@@ -11,11 +11,13 @@ import Typography from '@mui/material/Typography';
 import MuiAppBar from '@mui/material/AppBar';
 import IconButton from '@mui/material/IconButton';
 import { styled } from '@mui/material/styles';
+import { useSelector } from 'react-redux';
 
 const Header = ({ open, setOpen, drawerWidth }) => {
     const handleDrawerOpen = () => {
         setOpen(true);
     };
+    const { data } = useSelector((state) => state.user);
     const [anchorEl, setAnchorEl] = React.useState(null);
 
     const isMenuOpen = Boolean(anchorEl);
@@ -23,7 +25,6 @@ const Header = ({ open, setOpen, drawerWidth }) => {
     const handleProfileMenuOpen = (event) => {
         setAnchorEl(event.currentTarget);
     };
-
     const handleMenuClose = () => {
         setAnchorEl(null);
     };
@@ -84,15 +85,15 @@ const Header = ({ open, setOpen, drawerWidth }) => {
                             onClick={handleProfileMenuOpen}
                             color="inherit"
                         >
-                            <Avatar src="https://scontent.fsgn5-9.fna.fbcdn.net/v/t39.30808-6/169147778_3000080340318830_8496454307966035293_n.jpg?_nc_cat=106&ccb=1-7&_nc_sid=5f2048&_nc_ohc=TzbQ_XUUdtgQ7kNvgF-ySuc&_nc_ht=scontent.fsgn5-9.fna&oh=00_AYBrbVzxou4mPxSd8VDtsUXgpSPw7tUsjiEwBg_pdfFkFw&oe=66703F34" />
+                            <Avatar src={data.avatar} alt="A" />
                         </IconButton>
                     </Box>
                 </Toolbar>
             </AppBar>
             <Menu
-                anchorEl={anchorEl}
+                anchorEl={() => anchorEl?.current}
                 anchorOrigin={{
-                    vertical: 'bottom',
+                    vertical: 'top',
                     horizontal: 'right',
                 }}
                 id={menuId}
