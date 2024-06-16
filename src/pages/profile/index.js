@@ -49,21 +49,22 @@ const Profile = () => {
                         },
                     },
                 );
-                if (res.data.code === 1007) {
+                console.log(res);
+                setAlertMessage('Đổi Mật Khẩu Thành Công');
+                setAlertType('success');
+                setOpenAlert(true);
+            } catch (ex) {
+                if (ex.response.data.code === 1007) {
                     setAlertMessage('Mật Khẩu Sai');
                     setAlertType('error');
                     setOpenAlert(true);
                     setOpenDialog(true);
                 } else {
-                    setAlertMessage('Đổi Mật Khẩu Thành Công');
-                    setAlertType('success');
+                    setAlertMessage('Đã Có Lỗi Xảy Ra');
+                    setAlertType('error');
                     setOpenAlert(true);
+                    setOpenDialog(true);
                 }
-            } catch (ex) {
-                setAlertMessage('Đã Có Lỗi Xảy Ra');
-                setAlertType('error');
-                setOpenAlert(true);
-                setOpenDialog(true);
             } finally {
                 setLoading(false);
             }
@@ -178,7 +179,7 @@ const Profile = () => {
                 <DialogActions>
                     <Button onClick={() => setOpenDialog(false)}>Huỷ</Button>
                     <Button autoFocus onClick={() => handleChangePassword()}>
-                        Thêm
+                        Đổi
                     </Button>
                 </DialogActions>
             </Dialog>

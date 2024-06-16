@@ -22,6 +22,7 @@ import { unwrapResult } from '@reduxjs/toolkit';
 const Login = () => {
     const [loading, setLoading] = useState(false);
     const [openAlert, setOpenAlert] = useState(false);
+    const [alertMessage, setAlertMessage] = useState('Đã Có Lỗi Xảy Ra');
     const nav = useNavigate();
     const dispath = useDispatch();
     const { status } = useSelector((state) => state.user);
@@ -39,32 +40,16 @@ const Login = () => {
             .then(unwrapResult)
             .then(() => {
                 nav('/');
+            })
+            .catch((erro) => {
+                if (erro.code === 1001) {
+                    setOpenAlert(true);
+                    setAlertMessage('Tài Khoản Hoặc Mật Khẩu Không Chính Xác');
+                } else {
+                    setOpenAlert(true);
+                    setAlertMessage('Đã Có Lỗi Xảy Ra');
+                }
             });
-
-        // try {
-        //     let res = await APIs.post(
-        //         endPoints['login'],
-        //         JSON.stringify({
-        //             username: data.get('username'),
-        //             password: data.get('password'),
-        //         }),
-        //         {
-        //             headers: {
-        //                 'Content-Type': 'application/json;charset=UTF-8',
-        //             },
-        //         },
-        //     );
-        //     cookie.save('token', res.data?.result?.token);
-        //     setTimeout(async () => {
-        //         let u = await authApi().get(endPoints['myInfo']);
-        //         nav('/');
-        //     }, 100);
-        // } catch (ex) {
-        //     setOpenAlert(true);
-        //     console.error(ex);
-        // } finally {
-        //     setLoading(false);
-        // }
     };
 
     return (
@@ -126,12 +111,13 @@ const Login = () => {
             </Backdrop>
             {/* ---------------Alert------------- */}
             <Snackbar
-                open={status === 'rejected'}
+                open={status === 'rejected' && openAlert}
+                onClose={() => setOpenAlert(false)}
                 autoHideDuration={6000}
                 anchorOrigin={{ horizontal: 'right', vertical: 'top' }}
             >
                 <Alert severity="warning" va sx={{ width: '100%' }}>
-                    Tài Khoản Hoặc Mật Khẩu Không Chính Xác
+                    {alertMessage}
                 </Alert>
             </Snackbar>
         </Container>

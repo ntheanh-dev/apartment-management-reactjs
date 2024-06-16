@@ -16,8 +16,9 @@ export const userReducer = createSlice({
             })
             .addCase(login.fulfilled, (state, action) => {
                 state.status = 'idle';
-                console.log(action.payload);
-                state.data = action.payload;
+                if (action.payload) {
+                    state.data = action.payload;
+                }
             })
             .addCase(login.rejected, (state) => {
                 state.status = 'rejected';
@@ -25,15 +26,19 @@ export const userReducer = createSlice({
     },
 });
 
-export const login = createAsyncThunk('user/fetchUserData', async (user) => {
-    let res = await APIs.post(endPoints['login'], JSON.stringify(user), {
-        headers: {
-            'Content-Type': 'application/json;charset=UTF-8',
-        },
-    });
-    cookie.save('token', res.data?.result?.token);
-    let u = await authApi().get(endPoints['myInfo']);
-    return u.data.result;
+export const login = createAsyncThunk('user/fetchUserData', async (user, { rejectWithValue }) => {
+    try {
+        let res = await APIs.post(endPoints['login'], JSON.stringify(user), {
+            headers: {
+                'Content-Type': 'application/json;charset=UTF-8',
+            },
+        });
+        cookie.save('token', res.data?.result?.token);
+        let u = await authApi().get(endPoints['myInfo']);
+        return u.data.result;
+    } catch (err) {
+        return rejectWithValue(err.response.data);
+    }
 });
 
 export default userReducer.reducer;

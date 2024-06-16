@@ -259,7 +259,6 @@ const Relative = () => {
     };
 
     const handleAddRelatives = () => {
-        console.log(dob);
         const newRelative = {
             name: `${lastName} ${firstName}`,
             dob: formatDate(dob),
