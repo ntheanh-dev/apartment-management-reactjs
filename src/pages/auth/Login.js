@@ -20,15 +20,17 @@ import { login } from '../../redux/userReducer';
 import { unwrapResult } from '@reduxjs/toolkit';
 
 const Login = () => {
-    const [loading, setLoading] = useState(false);
     const [openAlert, setOpenAlert] = useState(false);
     const [alertMessage, setAlertMessage] = useState('Đã Có Lỗi Xảy Ra');
+    const { data } = useSelector((state) => state.user);
     const nav = useNavigate();
+    if (data.username) {
+        nav('/');
+    }
     const dispath = useDispatch();
     const { status } = useSelector((state) => state.user);
     const handleSubmit = async (event) => {
         event.preventDefault();
-        setLoading(true);
         const data = new FormData(event.currentTarget);
 
         dispath(
@@ -42,7 +44,7 @@ const Login = () => {
                 nav('/');
             })
             .catch((erro) => {
-                if (erro.code === 1001) {
+                if (erro.code === 1003) {
                     setOpenAlert(true);
                     setAlertMessage('Tài Khoản Hoặc Mật Khẩu Không Chính Xác');
                 } else {
@@ -79,7 +81,7 @@ const Login = () => {
                         name="username"
                         autoComplete="username"
                         autoFocus
-                        defaultValue={'admin1'}
+                        defaultValue={'resident'}
                     />
                     <TextField
                         margin="normal"

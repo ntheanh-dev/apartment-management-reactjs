@@ -6,12 +6,12 @@ import Profile from '../pages/profile';
 import Relative from '../pages/relatives';
 
 const publicRoutes = [
+    { path: '/login', component: Login, isNotDefault: true },
     { path: '/', component: Home },
     { path: '/chat', component: Chat },
     { path: '/cabinet', component: Cabinet },
     { path: '/relatives', component: Relative },
     { path: '/profile', component: Profile },
-    { path: '/login', component: Login, isNotDefault: true },
 ];
 
 export { publicRoutes };
