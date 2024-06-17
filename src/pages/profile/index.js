@@ -60,7 +60,7 @@ const Profile = () => {
                 setAlertType('success');
                 setOpenAlert(true);
             } catch (ex) {
-                if (ex.response.data.code === 1007) {
+                if (ex.response.data.code === 1003) {
                     setAlertMessage('Mật Khẩu Sai');
                     setAlertType('error');
                     setOpenAlert(true);
@@ -91,7 +91,11 @@ const Profile = () => {
                 setLoading(false);
             })
             .catch((e) => {
-                setAlertMessage('Đã Có Lỗi Xảy Ra');
+                if (e.code === 1009) {
+                    setAlertMessage('Không thể tải ảnh lên cloud');
+                } else {
+                    setAlertMessage('Đã Có Lỗi Xảy Ra');
+                }
                 setAlertType('error');
                 setOpenAlert(true);
                 setLoading(false);
@@ -152,7 +156,7 @@ const Profile = () => {
                 </Grid>
                 <Grid item xs={6}>
                     <FormControl>
-                        <FormLabel>Số</FormLabel>
+                        <FormLabel>Quận/Huyện</FormLabel>
                         <Input disabled value={data.ward} />
                     </FormControl>
                 </Grid>
