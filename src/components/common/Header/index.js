@@ -62,7 +62,7 @@ const Header = ({ open, setOpen, drawerWidth }) => {
                         <AiOutlineMenu />
                     </IconButton>
                     <Typography variant="h6" noWrap component="div">
-                        Quản Lý Chung Cư
+                        Xin chào, <span className="text-lg font-semibold">{data.fullName}</span>
                     </Typography>
                     <Box sx={{ flexGrow: 1 }} />
                     <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
