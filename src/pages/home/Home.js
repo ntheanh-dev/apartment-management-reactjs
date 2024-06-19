@@ -82,14 +82,14 @@ const Home = () => {
                     </LinkTo>
                 </Grid>
                 <Grid item sm={12} xs={12} md={3}>
-                    <LinkTo to={'/cabinet'}>
+                    <LinkTo to={'/evaluation'}>
                         <div className="cursor-pointer hover:opacity-80 border-1 border-gray-500 rounded-lg w-48 h-48 flex justify-center items-center drop-shadow-md">
                             <div className="flex flex-col justify-center items-center">
                                 <div>
                                     <img src={icon4} />
                                 </div>
                                 <Typography variant="h2" noWrap component="div" className="flex items-center">
-                                    <span className="font-semibold text-lg text-black">Đánh Giá</span>
+                                    <span className="font-semibold text-lg text-black">Đánh Giá/Phản Hồi</span>
                                 </Typography>
                             </div>
                         </div>

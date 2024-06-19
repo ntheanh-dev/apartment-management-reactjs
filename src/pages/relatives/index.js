@@ -124,7 +124,7 @@ function EnhancedTableToolbar(props) {
         >
             {numSelected > 0 ? (
                 <Typography sx={{ flex: '1 1 100%' }} component="div">
-                    {numSelected} hàng được chọn
+                    {numSelected} người được chọn
                 </Typography>
             ) : (
                 <Typography level="body-lg" sx={{ flex: '1 1 100%' }} id="tableTitle" component="div">

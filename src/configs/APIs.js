@@ -7,7 +7,7 @@ export const endPoints = {
     postItems: 'items/',
     relatives: 'relatives/',
     addRelative: 'relatives/add/',
-    login: 'token',
+    login: 'token/',
     myInfo: 'residents/my-info/',
     changeAvatar: '/residents/change-avatar/',
     changePassWord: 'change-password/',
