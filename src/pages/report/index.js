@@ -43,7 +43,7 @@ export default function Report() {
                 <CircularProgress color="inherit" />
             </Backdrop>
             <Typography component="h1" variant="h4">
-                <b className="uppercase">Đóng góp </b>
+                <b className="uppercase">Đóng góp</b>
             </Typography>
             <FormControl className="flex gap-10" required>
                 <TextField
