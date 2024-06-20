@@ -11,6 +11,9 @@ export const endPoints = {
     myInfo: 'residents/my-info/',
     changeAvatar: '/residents/change-avatar/',
     changePassWord: 'change-password/',
+    getCriterion: 'evaluation/',
+    postEvaluation: 'evaluation/',
+    postReport:'report/',
 };
 
 export const authApi = () => {
