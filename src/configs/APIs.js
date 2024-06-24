@@ -14,6 +14,7 @@ export const endPoints = {
     getCriterion: 'evaluation/',
     postEvaluation: 'evaluation/',
     postReport:'report/',
+    getBill:'bill/',
 };
 
 export const authApi = () => {

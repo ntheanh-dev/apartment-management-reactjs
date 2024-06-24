@@ -24,7 +24,6 @@ export default function Evaluation() {
     const [evaluation, setEvaluation] = useState([]);
     const [alertMessage, setAlertMessage] = useState('Đã có lỗi xảy ra');
     const [openAleart, setOpenAlert] = useState(false);
-    const [returnhome,setReturnhome] = useState(false);
     const nav = useNavigate();
     useEffect(() => {
         setLoading(true);
@@ -69,16 +68,13 @@ export default function Evaluation() {
                 },
             });
             if(res.status == 200){
-                setReturnhome(true);
+                nav("/");
             }
         } catch (ex) {
             setOpenAlert(true);
             console.log(ex);
         } finally {
             setLoading(false);
-            if(returnhome){
-                nav("/");
-            }
         }
     };
     return (

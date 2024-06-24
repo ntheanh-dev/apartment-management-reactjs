@@ -40,7 +40,7 @@ const Home = () => {
             </Typography>
             <Grid container spacing={{ xs: 10 }}>
                 <Grid item sm={12} xs={12} md={3} className="flex justify-center items-center">
-                    <LinkTo>
+                    <LinkTo to={'/bill'}>
                         <div className="cursor-pointer hover:opacity-80 border-1 border-gray-500 rounded-lg w-48 h-48 flex justify-center items-center drop-shadow-md">
                             <div className="flex flex-col justify-center items-center">
                                 <div>
