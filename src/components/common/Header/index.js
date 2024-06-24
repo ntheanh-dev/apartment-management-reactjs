@@ -12,24 +12,42 @@ import MuiAppBar from '@mui/material/AppBar';
 import IconButton from '@mui/material/IconButton';
 import { styled } from '@mui/material/styles';
 import { useSelector } from 'react-redux';
+import { db } from '../../../firebase/config';
+import { collection, getDocs, onSnapshot, orderBy, query, where } from 'firebase/firestore';
+import PopupState, { bindTrigger, bindMenu } from 'material-ui-popup-state';
 
 const Header = ({ open, setOpen, drawerWidth }) => {
     const handleDrawerOpen = () => {
         setOpen(true);
     };
     const { data } = useSelector((state) => state.user);
-    const [anchorEl, setAnchorEl] = React.useState(null);
+    const [notifications, setNotifications] = React.useState([]);
 
-    const isMenuOpen = Boolean(anchorEl);
-
-    const handleProfileMenuOpen = (event) => {
-        setAnchorEl(event.currentTarget);
-    };
-    const handleMenuClose = () => {
-        setAnchorEl(null);
-    };
-
-    const menuId = 'primary-search-account-menu';
+    React.useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const q = query(collection(db, 'notifications'), where('userId', '==', data.id), orderBy('createAt'));
+                onSnapshot(q, (querySnapshot) => {
+                    querySnapshot.docChanges().forEach((change) => {
+                        if (change.type === 'added') {
+                            console.log(change.doc.data());
+                            setNotifications((noti) => [
+                                ...noti,
+                                {
+                                    ...change.doc.data(),
+                                },
+                            ]);
+                        }
+                    });
+                });
+            } catch (ex) {
+                console.log(ex);
+            }
+        };
+        if (data.id) {
+            fetchData();
+        }
+    }, []);
 
     const AppBar = styled(MuiAppBar, {
         shouldForwardProp: (prop) => prop !== 'open',
@@ -67,64 +85,70 @@ const Header = ({ open, setOpen, drawerWidth }) => {
                     <Box sx={{ flexGrow: 1 }} />
                     <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
                         <IconButton size="large" aria-label="show 4 new mails" color="inherit">
-                            <Badge badgeContent={4} color="error">
-                                <MdOutlineMessage />
-                            </Badge>
+                            <Link to={'/chat'}>
+                                <Badge badgeContent={4} color="error">
+                                    <MdOutlineMessage />
+                                </Badge>
+                            </Link>
                         </IconButton>
-                        <IconButton size="large" aria-label="show 17 new notifications" color="inherit">
-                            <Badge badgeContent={17} color="error">
-                                <IoNotificationsSharp />
-                            </Badge>
-                        </IconButton>
-                        <IconButton
-                            size="large"
-                            edge="end"
-                            aria-label="account of current user"
-                            aria-controls={menuId}
-                            aria-haspopup="true"
-                            onClick={handleProfileMenuOpen}
-                            color="inherit"
-                        >
-                            <Avatar src={data.avatar} alt="A" />
-                        </IconButton>
+                        <PopupState variant="popover" popupId="demo-popup-menu">
+                            {(popupState) => (
+                                <React.Fragment>
+                                    <IconButton
+                                        size="large"
+                                        aria-label="show 17 new notifications"
+                                        color="inherit"
+                                        {...bindTrigger(popupState)}
+                                    >
+                                        <Badge
+                                            badgeContent={notifications.length > 0 && notifications.length}
+                                            color="error"
+                                        >
+                                            <IoNotificationsSharp />
+                                        </Badge>
+                                    </IconButton>
+                                    <Menu {...bindMenu(popupState)}>
+                                        <MenuItem onClick={popupState.close}>Profile</MenuItem>
+                                        <MenuItem onClick={popupState.close}>My account</MenuItem>
+                                        <MenuItem onClick={popupState.close}>Logout</MenuItem>
+                                    </Menu>
+                                </React.Fragment>
+                            )}
+                        </PopupState>
+
+                        <PopupState variant="popover" popupId="demo-popup-menu">
+                            {(popupState) => (
+                                <React.Fragment>
+                                    <IconButton color="inherit" {...bindTrigger(popupState)} size="large">
+                                        <Avatar src={data.avatar} alt="A" />
+                                    </IconButton>
+                                    <Menu {...bindMenu(popupState)}>
+                                        <MenuItem>
+                                            {' '}
+                                            <Link
+                                                to="/profile"
+                                                className="flex items-center gap-1.5 text-sm font-medium duration-300 ease-in-out hover:text-primary lg:text-base"
+                                            >
+                                                <CgProfile />
+                                                Trang Cá Nhấn
+                                            </Link>
+                                        </MenuItem>
+                                        <MenuItem>
+                                            <Link
+                                                to="/login"
+                                                className="flex items-center gap-1.5 text-sm font-medium duration-300 ease-in-out hover:text-primary lg:text-base"
+                                            >
+                                                <CiLogout />
+                                                Đăng Xuất
+                                            </Link>
+                                        </MenuItem>
+                                    </Menu>
+                                </React.Fragment>
+                            )}
+                        </PopupState>
                     </Box>
                 </Toolbar>
             </AppBar>
-            <Menu
-                anchorEl={() => anchorEl?.current}
-                anchorOrigin={{
-                    vertical: 'top',
-                    horizontal: 'right',
-                }}
-                id={menuId}
-                keepMounted
-                transformOrigin={{
-                    vertical: 'top',
-                    horizontal: 'right',
-                }}
-                open={isMenuOpen}
-                onClose={handleMenuClose}
-            >
-                <MenuItem onClick={handleMenuClose}>
-                    {' '}
-                    <Link
-                        to="/profile"
-                        className="flex items-center gap-1.5 text-sm font-medium duration-300 ease-in-out hover:text-primary lg:text-base"
-                    >
-                        <CgProfile />
-                        Trang Cá Nhấn
-                    </Link>
-                </MenuItem>
-                <MenuItem onClick={handleMenuClose}>
-                    <Link
-                        to="/login"
-                        className="flex items-center gap-1.5 text-sm font-medium duration-300 ease-in-out hover:text-primary lg:text-base"
-                    >
-                        <CiLogout />
-                        Đăng Xuất
-                    </Link>
-                </MenuItem>
-            </Menu>
         </>
     );
 };
