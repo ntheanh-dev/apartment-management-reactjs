@@ -9,7 +9,7 @@ import Relative from '../pages/relatives';
 import Report from '../pages/report';
 
 const publicRoutes = [
-    { path: '/login', component: Login, isNotDefault: true },
+    // { path: '/login', component: Login, isNotDefault: true },
     { path: '/', component: Home },
     { path: '/chat', component: Chat },
     { path: '/cabinet', component: Cabinet },

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import Header from './Header/index';
-import MyDrawer from './MyDrawer';
+import Header from '../Header/index';
+import MyDrawer from '../MyDrawer';
 export const DefaultLayout = ({ children }) => {
     const [open, setOpen] = useState(false);
     const drawerWidth = 240;

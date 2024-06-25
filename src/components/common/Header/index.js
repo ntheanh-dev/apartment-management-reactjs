@@ -30,7 +30,6 @@ const Header = ({ open, setOpen, drawerWidth }) => {
                 onSnapshot(q, (querySnapshot) => {
                     querySnapshot.docChanges().forEach((change) => {
                         if (change.type === 'added') {
-                            console.log(change.doc.data());
                             setNotifications((noti) => [
                                 ...noti,
                                 {
