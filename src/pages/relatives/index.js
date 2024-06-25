@@ -439,8 +439,7 @@ const Relative = () => {
                             const labelId = `enhanced-table-checkbox-${row.id}`;
                             const createdAt = row?.createdAt?.join('-');
                             const currentYear = new Date().getFullYear();
-                            const age = currentYear - row.dob[1];
-
+                            const age = currentYear - row.dob[0];
                             return (
                                 <tr
                                     onClick={(event) => handleClick(event, row.id)}

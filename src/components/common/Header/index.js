@@ -94,7 +94,7 @@ const Header = ({ open, setOpen, drawerWidth }) => {
                                         {...bindTrigger(popupState)}
                                     >
                                         <Badge
-                                            badgeContent={notifications.length > 0 && notifications.length}
+                                            badgeContent={notifications.length > 0 ? notifications.length : undefined}
                                             color="error"
                                         >
                                             <IoNotificationsSharp />
