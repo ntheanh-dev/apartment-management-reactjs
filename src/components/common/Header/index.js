@@ -2,7 +2,7 @@ import React from 'react';
 import { CgProfile } from 'react-icons/cg';
 import { CiLogout } from 'react-icons/ci';
 import { Link } from 'react-router-dom';
-import { Avatar, Box, Toolbar } from '@mui/material';
+import { Alert, Avatar, Box, Toolbar } from '@mui/material';
 import { IoNotificationsSharp } from 'react-icons/io5';
 import { Badge, Menu, MenuItem } from '@mui/material';
 import { MdOutlineMessage } from 'react-icons/md';
@@ -30,6 +30,7 @@ const Header = ({ open, setOpen, drawerWidth }) => {
                 onSnapshot(q, (querySnapshot) => {
                     querySnapshot.docChanges().forEach((change) => {
                         if (change.type === 'added') {
+                            console.log(change.doc.data());
                             setNotifications((noti) => [
                                 ...noti,
                                 {
@@ -83,13 +84,6 @@ const Header = ({ open, setOpen, drawerWidth }) => {
                     </Typography>
                     <Box sx={{ flexGrow: 1 }} />
                     <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
-                        <IconButton size="large" aria-label="show 4 new mails" color="inherit">
-                            <Link to={'/chat'}>
-                                <Badge badgeContent={4} color="error">
-                                    <MdOutlineMessage />
-                                </Badge>
-                            </Link>
-                        </IconButton>
                         <PopupState variant="popover" popupId="demo-popup-menu">
                             {(popupState) => (
                                 <React.Fragment>
@@ -107,9 +101,16 @@ const Header = ({ open, setOpen, drawerWidth }) => {
                                         </Badge>
                                     </IconButton>
                                     <Menu {...bindMenu(popupState)}>
-                                        <MenuItem onClick={popupState.close}>Profile</MenuItem>
-                                        <MenuItem onClick={popupState.close}>My account</MenuItem>
-                                        <MenuItem onClick={popupState.close}>Logout</MenuItem>
+                                        {notifications.map((noti) => (
+                                            <MenuItem onClick={popupState.close}>
+                                                <Link to={'/bill'}>
+                                                    <Alert variant="outlined" severity="warning">
+                                                        {noti.notificationType === 'MONTHLY_BILL' &&
+                                                            'Bạn có một hoá đơn cần thanh toán'}
+                                                    </Alert>
+                                                </Link>
+                                            </MenuItem>
+                                        ))}
                                     </Menu>
                                 </React.Fragment>
                             )}

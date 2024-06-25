@@ -1,13 +1,12 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { FocusTrap } from '@mui/base/FocusTrap';
 import { Alert, Backdrop, Box, Button, CircularProgress, Snackbar, Typography } from '@mui/material';
-import { authApi, endPoints } from '../../configs/APIs';
+import { BASE_URL, authApi, endPoints } from '../../configs/APIs';
 import { Container } from 'react-bootstrap';
 import QRCode from 'qrcode.react';
 import { Link } from 'react-router-dom';
 import jsPDF from 'jspdf';
-import html2canvas from 'html2canvas'
-
+import html2canvas from 'html2canvas';
 export default function Bill() {
     const [listBill, setlistBill] = useState([]);
     const [open, setOpen] = useState(false);
@@ -22,8 +21,11 @@ export default function Bill() {
             try {
                 const res = await authApi().get(endPoints['getBill']);
                 if (res.status === 200) {
-                    setlistBill(res.data);
-                    setPrice(TotalPrice(res.data[0]));
+                    console.log(res.data);
+                    if (res.data.length > 0) {
+                        setlistBill(res.data);
+                        setPrice(TotalPrice(res.data[0]));
+                    }
                 } else {
                     setOpenAlert(true);
                 }
@@ -52,39 +54,37 @@ export default function Bill() {
 
     const handleDownloadPdf = async () => {
         if (!printRef.current) {
-          console.error('Invalid element provided as first argument');
-          return;
+            console.error('Invalid element provided as first argument');
+            return;
         }
 
-        document.querySelectorAll('.hide-for-pdf').forEach(element => {
+        document.querySelectorAll('.hide-for-pdf').forEach((element) => {
             element.style.display = 'none';
         });
-    
+
         const element = printRef.current;
         try {
-          const canvas = await html2canvas(element);
-          const data = canvas.toDataURL('image/png');
-          const pdf = new jsPDF({
-            orientation: 'portrait',
-            unit: 'mm',
-            format: 'a4',
-          });
-    
-          const imgProperties = pdf.getImageProperties(data);
-          const pdfWidth = pdf.internal.pageSize.getWidth();
-          const pdfHeight = (imgProperties.height * pdfWidth) / imgProperties.width;
-    
-          pdf.addImage(data, 'PNG', 0, 0, pdfWidth, pdfHeight);
-          pdf.save('receipt.pdf');
+            const canvas = await html2canvas(element);
+            const data = canvas.toDataURL('image/png');
+            const pdf = new jsPDF({
+                orientation: 'portrait',
+                unit: 'mm',
+                format: 'a4',
+            });
+
+            const imgProperties = pdf.getImageProperties(data);
+            const pdfWidth = pdf.internal.pageSize.getWidth();
+            const pdfHeight = (imgProperties.height * pdfWidth) / imgProperties.width;
+
+            pdf.addImage(data, 'PNG', 0, 0, pdfWidth, pdfHeight);
+            pdf.save('receipt.pdf');
         } catch (error) {
-          console.error('An error occurred while generating the PDF:', error);
+            console.error('An error occurred while generating the PDF:', error);
         }
-        document.querySelectorAll('.hide-for-pdf').forEach(element => {
+        document.querySelectorAll('.hide-for-pdf').forEach((element) => {
             element.style.display = '';
         });
-      };
-    
-    
+    };
 
     return (
         <Container className="flex items-center gap-10 flex-col mt-10" component="main" maxWidth="xs">
@@ -93,7 +93,7 @@ export default function Bill() {
             </Backdrop>
             <Typography component="h1" variant="h4">
                 <b className="uppercase">Hóa đơn thanh toán tiền nhà</b>
-                <i class="bi bi-cash-coin"></i>
+                <i className="bi bi-cash-coin"></i>
             </Typography>
             {listBill != [] ? (
                 listBill.map((bill, idx) => {
@@ -112,7 +112,7 @@ export default function Bill() {
                                 {open && (
                                     <FocusTrap open>
                                         <Box tabIndex={-1} sx={{ mt: 1, p: 1 }}>
-                                            <table class="table-fixed">
+                                            <table className="table-fixed">
                                                 <thead>
                                                     <tr className="text-cyan-600">
                                                         <th>Dịch vụ</th>
@@ -132,7 +132,6 @@ export default function Bill() {
                                                         <td className="text-end">
                                                             {currencyFormat(bill.contract.room.price)}
                                                         </td>
-                                                        
                                                     </tr>
                                                     {bill.receiptDetails.map((detail, idx) => {
                                                         return (
@@ -160,8 +159,8 @@ export default function Bill() {
                                         </Box>
                                     </FocusTrap>
                                 )}
-                                <div className='flex'>
-                                    <div className='ml-10'>
+                                <div className="flex">
+                                    <div className="ml-10">
                                         <QRCode
                                             id="qrcode"
                                             value={`http://192.168.10.215:8080/ApartmentManagement/payment/submitOrder?orderInfo=${bill.id}&amount=${price}`}
@@ -170,8 +169,8 @@ export default function Bill() {
                                             includeMargin={true}
                                         />
                                     </div>
-                                    <div className='ml-20 flex justify-end flex-col gap-10'>
-                                        <table class="table-fixed">
+                                    <div className="ml-20 flex justify-end flex-col gap-10">
+                                        <table className="table-fixed">
                                             <thead>
                                                 <tr>
                                                     <th className="w-40"></th>
@@ -191,13 +190,16 @@ export default function Bill() {
                                             <Button
                                                 onClick={handleDownloadPdf}
                                                 className="w-30"
-                                                color='error'
+                                                color="error"
                                                 variant="contained"
                                             >
                                                 In pdf
                                             </Button>
                                             <Button className="w-30" color="success" variant="contained">
-                                                <Link to={`http://localhost:8080/ApartmentManagement/payment/submitOrder?orderInfo=${bill.id}&amount=${price}`} target='black'>
+                                                <Link
+                                                    to={`${BASE_URL}payment/submitOrder?orderInfo=${bill.id}&amount=${price}`}
+                                                    target="black"
+                                                >
                                                     Thanh toán
                                                 </Link>
                                             </Button>
@@ -209,7 +211,7 @@ export default function Bill() {
                     );
                 })
             ) : (
-                <></>
+                <Typography variant="h6">Hiện chưa có hoá đơn cần thanh toán😊</Typography>
             )}
             <Snackbar
                 open={openAleart}

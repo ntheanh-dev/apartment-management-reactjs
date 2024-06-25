@@ -1,27 +1,28 @@
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
-import { DefaultLayout } from './components/common/DefaultLayout';
+import { DefaultLayout } from './components/common/Layout/DefaultLayout';
 import { publicRoutes } from './routes';
-import PrivateRoute from './routes/PrivateRoute';
+import Login from './pages/auth/Login';
+import RequiredAuth from './pages/auth/RequiredAuth';
 function App() {
     return (
         <BrowserRouter>
             <Routes>
+                <Route path="/login" element={<Login />} />
                 {publicRoutes.map((route, index) => {
-                    const Layout = DefaultLayout;
                     const Page = route.component;
-
-                    let Ele = route.isNotDefault ? (
-                        <Page />
-                    ) : (
-                        <Layout>
-                            <Page />
-                        </Layout>
+                    return (
+                        <Route
+                            key={index}
+                            path={route.path}
+                            element={
+                                <RequiredAuth>
+                                    <DefaultLayout>
+                                        <Page />
+                                    </DefaultLayout>
+                                </RequiredAuth>
+                            }
+                        />
                     );
-
-                    if (route.path !== '/login') {
-                        Ele = <PrivateRoute>{Ele}</PrivateRoute>;
-                    }
-                    return <Route key={index} path={route.path} element={Ele} />;
                 })}
             </Routes>
         </BrowserRouter>
