@@ -83,6 +83,13 @@ const Header = ({ open, setOpen, drawerWidth }) => {
                         Xin chào, <span className="text-lg font-semibold">{data.fullName}</span>
                     </Typography>
                     <Box sx={{ flexGrow: 1 }} />
+                    <IconButton size="large" aria-label="show 4 new mails" color="inherit">
+                        <Link to={'/chat'}>
+                            <Badge badgeContent={1} color="error">
+                                <MdOutlineMessage />
+                            </Badge>
+                        </Link>
+                    </IconButton>
                     <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
                         <PopupState variant="popover" popupId="demo-popup-menu">
                             {(popupState) => (

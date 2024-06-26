@@ -38,8 +38,8 @@ const Home = () => {
             <Typography variant="h6" noWrap component="div" className="flex items-center">
                 <span className="font-semibold text-lg text-blue-900 my-2">Tiện Ích</span>
             </Typography>
-            <Grid container spacing={{ xs: 10 }}>
-                <Grid item sm={12} xs={12} md={3} className="flex justify-center items-center">
+            <Grid container spacing={{ xs: 1 }}>
+                <Grid item sm={12} xs={12} md={2} className="flex justify-center items-center">
                     <LinkTo to={'/bill'}>
                         <div className="cursor-pointer hover:opacity-80 border-1 border-gray-500 rounded-lg w-48 h-48 flex justify-center items-center drop-shadow-md">
                             <div className="flex flex-col justify-center items-center">
@@ -53,7 +53,7 @@ const Home = () => {
                         </div>
                     </LinkTo>
                 </Grid>
-                <Grid item sm={12} xs={12} md={3}>
+                <Grid item sm={12} xs={12} md={2}>
                     <LinkTo to={'/relatives'}>
                         <div className="cursor-pointer hover:opacity-80 border-1 border-gray-500 rounded-lg w-48 h-48 flex justify-center items-center drop-shadow-md">
                             <div className="flex flex-col justify-center items-center">
@@ -67,7 +67,7 @@ const Home = () => {
                         </div>
                     </LinkTo>
                 </Grid>
-                <Grid item sm={12} xs={12} md={3}>
+                <Grid item sm={12} xs={12} md={2}>
                     <LinkTo to={'/chat'}>
                         <div className="cursor-pointer hover:opacity-80 border-1 border-gray-500 rounded-lg w-48 h-48 flex justify-center items-center drop-shadow-md">
                             <div className="flex flex-col justify-center items-center">
@@ -81,7 +81,7 @@ const Home = () => {
                         </div>
                     </LinkTo>
                 </Grid>
-                <Grid item sm={12} xs={12} md={3}>
+                <Grid item sm={12} xs={12} md={2}>
                     <LinkTo to={'/evaluation'}>
                         <div className="cursor-pointer hover:opacity-80 border-1 border-gray-500 rounded-lg w-48 h-48 flex justify-center items-center drop-shadow-md">
                             <div className="flex flex-col justify-center items-center">
@@ -95,7 +95,7 @@ const Home = () => {
                         </div>
                     </LinkTo>
                 </Grid>
-                <Grid item sm={12} xs={12} md={3} className="flex justify-center items-center">
+                <Grid item sm={12} xs={12} md={2} className="flex justify-center items-center">
                     <LinkTo to={'/evaluation'}>
                         <div className="cursor-pointer hover:opacity-80 border-1 border-gray-500 rounded-lg w-48 h-48 flex justify-center items-center drop-shadow-md">
                             <div className="flex flex-col justify-center items-center">
@@ -109,7 +109,7 @@ const Home = () => {
                         </div>
                     </LinkTo>
                 </Grid>
-                <Grid item sm={12} xs={12} md={3} >
+                <Grid item sm={12} xs={12} md={2}>
                     <LinkTo to={'/report'}>
                         <div className="cursor-pointer hover:opacity-80 border-1 border-gray-500 rounded-lg w-48 h-48 flex justify-center items-center drop-shadow-md">
                             <div className="flex flex-col justify-center items-center">

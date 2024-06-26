@@ -3,7 +3,7 @@ import cookie from 'react-cookies';
 export const BASE_URL = 'http://localhost:8085/ApartmentManagement/';
 
 export const endPoints = {
-    items: (param) => `items/${param}`,
+    items: (param) => `api/items/${param}`,
     postItems: 'api/items/',
     relatives: 'api/relatives/',
     addRelative: 'api/relatives/add/',

@@ -236,7 +236,12 @@ const Cabinet = () => {
         );
         const loadItems = async () => {
             try {
-                let res = await authApi().get(endPoints['items'](`?${param}`));
+                let res = await authApi().get(endPoints['items'](`?${param}`), {
+                    headers: {
+                        'Content-Type': 'application/json;charset=UTF-8',
+                    },
+                });
+                console.log(res.data);
                 setData(res.data.result?.results);
                 setTotal(res.data.result.count);
             } catch (ex) {
